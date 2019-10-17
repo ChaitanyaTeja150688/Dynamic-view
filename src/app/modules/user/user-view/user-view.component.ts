@@ -43,19 +43,15 @@ export class UserViewComponent implements OnInit {
 
   getWorkItemDetails() {
     this.showLoader = true;
-    this.userDataService.getDropDownListBasedAppID(this.userDataService.userAppId).subscribe(
-      (dropdownResponse: any) => {
-        this.userDataService.dropDownList = dropdownResponse.dropdownNav;
-        if (this.userDataService.workItemDetails.keyId) {
-          this.userDataService.getUserWorkItemID(this.userDataService.workItemDetails.workitemId).subscribe((response: any) => {
-            this.setMaterialOrWorkDetails(response);
-          });
-        } else {
-          this.userDataService.getUserMaterialDetails(this.userDataService.workItemDetails.keyId).subscribe((response: any) => {
-            this.setMaterialOrWorkDetails(response);
-          });
-        }
+    if (this.userDataService.workItemDetails.keyId) {
+      this.userDataService.getUserWorkItemID(this.userDataService.workItemDetails.workitemId).subscribe((response: any) => {
+        this.setMaterialOrWorkDetails(response);
       });
+    } else {
+      this.userDataService.getUserMaterialDetails(this.userDataService.workItemDetails.keyId).subscribe((response: any) => {
+        this.setMaterialOrWorkDetails(response);
+      });
+    }
   }
 
   setMaterialOrWorkDetails(response) {
@@ -65,24 +61,29 @@ export class UserViewComponent implements OnInit {
       accordion.fields = uniqData;
     });
     // temporary code to filter duplicates
-    this.setConfigView(response.data);
-    this.showLoader = false;
+    this.userDataService.dropDownKeysList = response.dropdownList;
+    this.getDropDownInfo(response.data);
   }
 
   getConfigViews() {
     this.showLoader = true;
-    this.userDataService.getDropDownListBasedAppID(this.userDataService.userAppId).subscribe(
+    this.userDataService.getDashboardData(this.userDataService.userAppId).subscribe((response: Response) => {
+      this.viewsList = _.sortBy(response.views, function (o) { return -o.configId; });
+      if (this.viewsList.length > 0) {
+        this.formGroup.get('viewName').setValue(
+          this.userDataService.userConfigId ? this.userDataService.userConfigId : this.viewsList[0].configId);
+        this.createUserView();
+      }
+    });
+  }
+
+  getDropDownInfo(configData) {
+    this.userDataService.getDropDownListBasedAppID(this.userDataService.dropDownKeysList).subscribe(
       (dropdownResponse: any) => {
         this.userDataService.dropDownList = dropdownResponse.dropdownNav;
-        this.userDataService.getDashboardData(this.userDataService.userAppId).subscribe((response: Response) => {
-          this.viewsList = _.sortBy(response.views, function(o) { return -o.configId; }) ;
-          if (this.viewsList.length > 0) {
-            this.formGroup.get('viewName').setValue(
-              this.userDataService.userConfigId ? this.userDataService.userConfigId : this.viewsList[0].configId);
-            this.createUserView();
-          }
-        });
-    });
+        this.setConfigView(configData);
+        this.showLoader = false;
+      });
   }
 
   createUserView() {
@@ -91,16 +92,17 @@ export class UserViewComponent implements OnInit {
       configId).subscribe((response: any) => {
         this.isShow = true;
         this.formGroup = this.formBuilder.group({
-          viewName: new FormControl(configId)
+          viewName: new FormControl(configId),
+          sectionTable: this.formBuilder.array([])
         });
+        this.userDataService.dropDownKeysList = response.dropdownList;
+        this.getDropDownInfo(response.data);
         this.appDependentList = response.dependentList;
-        this.setConfigView(response.data);
-        this.showLoader = false;
-    });
+      });
   }
 
   setConfigView(data) {
-    data.accordions = _.sortBy(data.accordions, function(o) { return o.sectionId; });
+    data.accordions = _.sortBy(data.accordions, function (o) { return o.sectionId; });
     this.createViewJSON = data;
     this.veiwArray = Object.keys(this.createViewJSON);
   }

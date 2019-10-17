@@ -1,11 +1,11 @@
-<div [ngSwitch]="element.fieldType" *ngFor="let element of fieldList" class="float-left col-md-4">
-  <app-input *ngSwitchCase="'C'" [isAdmin]="false" [data]="element" [inputForm]="form"></app-input>
-  <app-input *ngSwitchCase="'D'" [isAdmin]="false" [data]="element" [inputForm]="form"></app-input>
-  <app-numeric-input *ngSwitchCase="''" [data]="element" [inputForm]="form"></app-numeric-input>
-  <app-numeric-input *ngSwitchCase="'N'" [data]="element" [inputForm]="form"></app-numeric-input>
-  <app-textarea *ngSwitchCase="'textArea'" [data]="element" [inputForm]="form"></app-textarea>
-  <app-drop-down-list *ngSwitchCase="'DD'" [data]="element" [inputForm]="form"></app-drop-down-list>
-  <app-drop-down-list *ngSwitchCase="'F4'" [data]="element" [inputForm]="form"></app-drop-down-list>
+<div [ngSwitch]="element.fieldType" *ngFor="let element of fieldList" class="float-left col-md-4" [ngClass]="{'col-md-12': isTable}">
+  <app-input *ngSwitchCase="'C'" [isAdmin]="false" [data]="element" [inputForm]="form" [hideLabel]="hideLabel"></app-input>
+  <app-input *ngSwitchCase="'D'" [isAdmin]="false" [data]="element" [inputForm]="form" [hideLabel]="hideLabel"></app-input>
+  <app-numeric-input *ngSwitchCase="''" [data]="element" [inputForm]="form" [hideLabel]="hideLabel"></app-numeric-input>
+  <app-numeric-input *ngSwitchCase="'N'" [data]="element" [inputForm]="form" [hideLabel]="hideLabel"></app-numeric-input>
+  <app-textarea *ngSwitchCase="'textArea'" [data]="element" [inputForm]="form" [hideLabel]="hideLabel"></app-textarea>
+  <app-drop-down-list *ngSwitchCase="'DD'" [data]="element" [inputForm]="form" [hideLabel]="hideLabel"></app-drop-down-list>
+  <app-drop-down-list *ngSwitchCase="'F4'" [data]="element" [inputForm]="form" [hideLabel]="hideLabel"></app-drop-down-list>
   <!-- <app-multi-select-dropdown-component *ngSwitchCase="'F4'" [data]="element" [inputForm]="form"></app-multi-select-dropdown-component> -->
   <div *ngSwitchCase="'CB'" class="col-md-12 col-sm-12 col-xs-6 form-group">
     <label for="sel1">{{element.displayName}}

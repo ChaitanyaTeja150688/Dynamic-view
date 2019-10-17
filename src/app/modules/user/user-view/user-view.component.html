@@ -14,12 +14,11 @@
     <div [ngSwitch]="key">
       <div class="row" *ngSwitchCase="'fields'">
         <div class="spacing-inputfields col-md-12">
-          <app-component-panel [form]="formGroup" [answers]="configAnswers" [fieldList]="createViewJSON[key]"></app-component-panel>
+          <app-component-panel [form]="formGroup" [answers]="configAnswers" [fieldList]="createViewJSON[key]">
+          </app-component-panel>
         </div>
       </div>
-      <app-accordion *ngSwitchCase="'accordions'" [answers]="configAnswers" [panels]="createViewJSON[key]" [isAdmin]="false"
-        [form]="formGroup">
-      </app-accordion>
+      <app-accordion *ngSwitchCase="'accordions'"  [panels]="createViewJSON[key]" [isAdmin]="false" [form]="formGroup"></app-accordion>
       <app-tabs *ngSwitchCase="'tabs'" [answers]="configAnswers" [tabList]="createViewJSON[key]" [isAdmin]="false"
         [form]="formGroup"></app-tabs>
     </div>
@@ -27,6 +26,7 @@
 </form>
 <div class="col-md-12 button-padding float-right">
   <button type="button" class="btn btn-primary float-right" (click)="cancel()">Cancel</button>
-  <button type="button float-right" *ngIf="isShow" class="btn btn-primary float-right" (click)="saveView()">Save</button>
+  <button type="button float-right" *ngIf="isShow" class="btn btn-primary float-right"
+    (click)="saveView()">Save</button>
 </div>
 <app-loader [showLoader]="showLoader"></app-loader>

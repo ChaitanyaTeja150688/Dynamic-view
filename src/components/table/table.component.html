@@ -1,0 +1,68 @@
+<div class="col-md-12" *ngIf="!isAdmin">
+    <button type="button" class="btn btn-primary add-new-button" (click)="addNewRow()">Add New Row</button>
+</div>
+<div class="col-md-12" style="overflow-x:auto;">
+    <div class="col-md-12">
+        <table [formGroup]="form" class="table dynamicViewTable">
+            <thead class="table-active">
+                <tr>
+                    <th>Sequence</th>
+                    <th [ngClass]="{'col-md-3': tabTableRows[0].rows.length > 3}"
+                        *ngFor="let column of tabTableRows[0].rows">{{column.displayName}}</th>
+                    <th *ngIf="(!isAdmin && tabTableRows.length > 1)">Delete</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="isAdmin">
+                <tr>
+                    <td>{{tabTableRows[0].sequence}}</td>
+                    <td [ngClass]="{'col-md-3': tabTableRows[0].rows.length > 3}"
+                        *ngFor="let column of tabTableRows[0].rows" [formGroupName]="tabTableRows[0].sequence">
+                        <app-field-list [fieldList]="[column]" [form]="getControlGroup(tabTableRows[0], column)"
+                            [hiddenRequired]="false">
+                        </app-field-list>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="!isAdmin">
+                <tr *ngFor="let row of tabTableRows; let index = index;" [formGroup]="form">
+                    <td>{{row.sequence}}</td>
+                    <td [ngClass]="{'col-md-3': row.rows.length > 3}" *ngFor="let fieldList of row.rows; let rowIndex = index;"
+                        [formGroupName]="row.sequence">
+                        <app-table-component-panel [fieldList]="fieldList" [hideLabel]="true" (changeEventEmitter)="changeEvent($event, fieldList, row, index, rowIndex)" [form]="getControlGroup(row, fieldList)">
+                        </app-table-component-panel>
+                        <!-- <div [ngSwitch]="fieldList.fieldType" class="col-md-12">
+                            <app-input *ngSwitchCase="'C'" [isAdmin]="false" [data]="fieldList"
+                                [inputForm]="getControlGroup(row, fieldList)" [hideLabel]="hideLabel" [isTable]="true">
+                            </app-input>
+                            <app-input *ngSwitchCase="'D'" [isAdmin]="false" [data]="fieldList"
+                                [inputForm]="getControlGroup(row, fieldList)" [hideLabel]="hideLabel" [isTable]="true">
+                            </app-input>
+                            <app-numeric-input *ngSwitchCase="''" [data]="fieldList"
+                                [inputForm]="getControlGroup(row, fieldList)" [hideLabel]="hideLabel" [isTable]="true">
+                            </app-numeric-input>
+                            <app-numeric-input *ngSwitchCase="'N'" [data]="fieldList"
+                                [inputForm]="getControlGroup(row, fieldList)" [hideLabel]="hideLabel" [isTable]="true">
+                            </app-numeric-input>
+                            <app-textarea *ngSwitchCase="'textArea'" [data]="fieldList"
+                                [inputForm]="getControlGroup(row, fieldList)" [hideLabel]="hideLabel" [isTable]="true">
+                            </app-textarea>
+                            <app-drop-down-list *ngSwitchCase="'DD'" [data]="fieldList"
+                                [inputForm]="getControlGroup(row, fieldList)" [hideLabel]="hideLabel" [isTable]="true">
+                            </app-drop-down-list>
+                            <app-drop-down-list *ngSwitchCase="'F4'" [data]="fieldList"
+                                [inputForm]="getControlGroup(row, fieldList)" [hideLabel]="hideLabel" [isTable]="true">
+                            </app-drop-down-list>
+                        </div> -->
+                    </td>
+                    <td *ngIf="tabTableRows.length > 1">
+                        <a (click)="deleteRow(row, index)"><i class="material-icons">delete</i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <div class="float-right" *ngIf="!isAdmin" [formArrayName]="sectionTable">
+            <app-pagination [dataLength]="tabTableRows.length" (pageChange)="pageChange($event)" [pageSize]="pageSize">
+            </app-pagination>
+        </div> -->
+    </div>
+</div>

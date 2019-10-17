@@ -1,45 +1,51 @@
-<div *ngIf="isAdmin">
-  <div [formGroup]="form" class="accordion-container" *ngFor="let panel of panels; let index = index">
-    <div class="panel" [class.panel-open]="!panel.isOpen">
-      <div class="panel-header d-flex position-relative col-md-12" tabindex="0">
-        <div class="col-md-4 panel-content-padding">
-          <input class="form-control" [ngClass]="{'is-invalid': isFieldValid(panel.sectionId)}"
-            (change)="onChange(index)" type="text" [formControlName]="panel.sectionId" />
+<div [formGroup]="form" *ngIf="isAdmin">
+  <div [formGroup]="form.get('sections')">
+    <div class="accordion-container" *ngFor="let panel of panels; let index = index" [formGroupName]="panel.sectionId">
+      <div class="panel" [class.panel-open]="!panel.isOpen">
+        <div class="panel-header d-flex position-relative col-md-12" tabindex="0">
+          <div class="col-md-4 panel-content-padding">
+            <!-- <input class="form-control" [ngClass]="{'is-invalid': isFieldValid(panel.sectionId)}"
+              (change)="onChange(index)" type="text" [formControlName]="panel.sectionId" /> -->
+            <input class="form-control" (change)="onChange(index, $event)" [ngClass]="{'is-invalid': isFieldValid(panel.sectionId, index)}" type="text" [value]="panel.sectionName" />
+          </div>
+          <div class="col-md-3 panel-content-padding">
+            <app-toggle-switch [label]="'Is Collapsible'" [panel]="panel" [fieldName]="'collapsable'"
+              (togglePanelChange)="toggleChange($event, index, panel, true)" [type]="'accordion'"></app-toggle-switch>
+          </div>
+          <div class="col-md-3 panel-content-padding">
+            <app-toggle-switch [label]="'Default Collapsed'" [panel]="panel" [fieldName]="'collapsed'"
+              [disable]="!panel.collapsable" (togglePanelChange)="toggleChange($event, index, panel, false)"
+              [type]="'accordion'"></app-toggle-switch>
+          </div>
+          <div class="col-md-1 panel-content-delete-padding">
+            <a (click)="delete(panel, index)"><i class="material-icons">delete</i></a>
+          </div>
+          <div class="col-md-1">
+            <i class="panel-icon fa" aria-label="arrow icon"
+              (keyup.enter)="(panel.collapsable ? panel.isOpen = !panel.isOpen : '')"
+              (click)="(panel.collapsable ? panel.isOpen = !panel.isOpen : '')" [class.fa-angle-down]="panel.isOpen"
+              [class.fa-angle-up]="!panel.isOpen"></i>
+          </div>
         </div>
-        <div class="col-md-3 panel-content-padding">
-          <app-toggle-switch [label]="'Is Collapsible'" [panel]="panel" [fieldName]="'collapsable'"
-            (togglePanelChange)="toggleChange($event, index, panel, true)" [type]="'accordion'"></app-toggle-switch>
+        <div class="panel-content" [class.d-none]="panel.isOpen">
+          <div class="row" *ngIf="panel.fields && panel.sectionId">
+            <app-field-list [fieldList]="panel.fields" [form]="getControlGroup(panel.sectionId, 'fields')">
+            </app-field-list>
+          </div>
+          <div *ngIf="panel.tabs">
+            <app-tabs [tabList]="panel.tabs" [form]="getControlGroup(panel.sectionId, 'tabs')" (deleteTabEmitter)="deleteTab($event, index)" [isAdmin]="isAdmin"
+              [isTable]="panel.isTable">
+            </app-tabs>
+          </div>
         </div>
-        <div class="col-md-3 panel-content-padding">
-          <app-toggle-switch [label]="'Default Collapsed'" [panel]="panel" [fieldName]="'collapsed'"
-            [disable]="!panel.collapsable" (togglePanelChange)="toggleChange($event, index, panel, false)"
-            [type]="'accordion'"></app-toggle-switch>
-        </div>
-        <div class="col-md-1 panel-content-delete-padding">
-          <a (click)="delete(panel, index)"><i class="material-icons">delete</i></a>
-        </div>
-        <div class="col-md-1">
-          <i class="panel-icon fa" aria-label="arrow icon"
-            (keyup.enter)="(panel.collapsable ? panel.isOpen = !panel.isOpen : '')"
-            (click)="(panel.collapsable ? panel.isOpen = !panel.isOpen : '')" [class.fa-angle-down]="panel.isOpen"
-            [class.fa-angle-up]="!panel.isOpen"></i>
-        </div>
-      </div>
-      <div class="panel-content" [class.d-none]="panel.isOpen">
-        <div class="row" *ngIf="panel.fields && panel.sectionId">
-          <app-field-list [fieldList]="panel.fields" [form]="form"></app-field-list>
-        </div>
-        <!-- <div *ngIf="panel.tabs">
-          <app-tabs [tabList]="panel.tabs" [form]="form" [isAdmin]="isAdmin" [form]="form"></app-tabs>
-        </div> -->
       </div>
     </div>
   </div>
 </div>
-
-<div *ngIf="!isAdmin">
-  <div [formGroup]="form" class="accordion-container" *ngFor="let panel of panels; let index = index">
-    <div *ngIf="panel.sectionId">
+<div [formGroup]="form" *ngIf="!isAdmin">
+  <div [formGroup]="form.get('sections')">
+    <div [formGroup]="form" class="accordion-container" *ngFor="let panel of panels; let index = index"
+      [formGroupName]="panel.sectionId">
       <div class="panel" [class.panel-open]="!panel.isOpen">
         <div class="panel-header d-flex position-relative" (keyup.enter)="panel.collapsable" (click)="panel.collapsable"
           tabindex="0">
@@ -52,12 +58,13 @@
           <div class="row" *ngIf="panel.fields && panel.sectionId">
             <div class="col-md-12">
               <app-component-panel [fieldList]="panel.fields" [answers]="answers" [isAccordion]="'true'"
-                [isAdmin]="false" [form]="form"></app-component-panel>
+                [isAdmin]="false" [form]="getControlGroup(panel.sectionId, 'fields')"></app-component-panel>
             </div>
           </div>
-          <!-- <div *ngIf="panel.tabs">
-            <app-tabs [tabList]="panel.tabs" [form]="form" [isAdmin]="isAdmin" [form]="form"></app-tabs>
-          </div> -->
+          <div *ngIf="(panel.tabs && panel.isTable)">
+            <app-tabs [tabList]="panel.tabs" [form]="getControlGroup(panel.sectionId, 'tabs')" [isAdmin]="false"
+              [isTable]="true"></app-tabs>
+          </div>
         </div>
       </div>
     </div>
@@ -73,12 +80,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete the section?</p>
+        <p *ngIf="!isSectionDependent">Are you sure you want to delete the section?</p>
+        <p *ngIf="isSectionDependent"><span class="pop-up-labelfont">{{deleteSection?.sectionName}}</span> section is
+          dependent on <span class="pop-up-labelfont">{{dependentSectionDetails}}</span> section field</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="confirmDeletePanel()">Yes</button>
+        <button type="button" class="btn btn-primary" *ngIf="!isSectionDependent"
+          (click)="confirmDeletePanel()">Yes</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal"
-          (click)="confirmationModal = false">No</button>
+          (click)="confirmationModal = false">{{ !isSectionDependent ? 'No' : 'Ok'}}</button>
       </div>
     </div>
   </div>

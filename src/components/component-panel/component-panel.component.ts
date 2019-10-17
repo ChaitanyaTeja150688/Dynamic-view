@@ -15,6 +15,8 @@ export class ComponentPanelComponent implements OnInit {
   @Input() answers = {};
   @Input() isAccordion = false;
   @Input() isAdmin: Boolean = true;
+  @Input() isTable: false;
+  @Input() hideLabel = false;
   constructor(
     public formBuilder: FormBuilder,
     private userDataService: UserDataService
@@ -28,15 +30,17 @@ export class ComponentPanelComponent implements OnInit {
   }
 
   buildFormGroup() {
-    _.forEach(this.fieldList, (fieldSet: FieldSet) => {
-      const form = this.form.get(fieldSet.fieldName);
-      if (form) {
-      } else {
-        const control = this.formBuilder.control(
-          this.getControlValue(fieldSet.fieldName), fieldSet.required ? [Validators.required] : null);
-        this.form.addControl(fieldSet.fieldName, control);
-      }
-    });
+    if (!this.isTable) {
+      _.forEach(this.fieldList, (fieldSet: FieldSet) => {
+        const form = this.form.get(fieldSet.fieldName);
+        if (form) {
+        } else {
+          const control = this.formBuilder.control(
+            this.getControlValue(fieldSet.fieldName), fieldSet.required ? [Validators.required] : null);
+          this.form.addControl(fieldSet.fieldName, control);
+        }
+      });
+    }
   }
 
   getControlValue(fieldName: string) {
@@ -50,7 +54,7 @@ export class ComponentPanelComponent implements OnInit {
   }
 
   getMasterValeus(element) {
-    const filteredArray = _.find(this.userDataService.dropDownList, { 'fieldName': element.fieldName});
+    const filteredArray = _.find(this.userDataService.dropDownList, { 'fieldName': element.fieldName });
     return filteredArray ? filteredArray.dropdowns : [];
   }
 

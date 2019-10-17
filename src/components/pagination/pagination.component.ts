@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 import * as _ from 'underscore';
 
 @Component({
@@ -7,14 +7,20 @@ import * as _ from 'underscore';
     templateUrl: 'pagination.component.html'
 })
 
-export class PaginationComponent implements OnInit {
+export class PaginationComponent implements OnChanges {
     @Input() dataLength;
     @Input() pageSize;
     @Output() pageChange = new EventEmitter<any>();
     currentPage = 1;
     pages = [];
 
-    ngOnInit() {
+    ngOnChanges() {
+        this.setPagination();
+    }
+
+    setPagination() {
+        this.pages = [];
+        this.currentPage = 1;
         let arrayLength = this.dataLength / this.pageSize;
         const arrayLengthSplit = arrayLength.toString().split('.');
         arrayLength = arrayLengthSplit.length > 1 ? parseInt(arrayLengthSplit[0]) + 1 : parseInt(arrayLengthSplit[0]);

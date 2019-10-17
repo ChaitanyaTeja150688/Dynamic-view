@@ -1,12 +1,34 @@
-<form [formGroup]="inputForm">
-  <div class="form-group">
-    <div class="">
-      <label class="view-label" for="sel1" title="{{data.displayName}}">{{convertDisplayName(data.displayName)}}<span class="mandatory-span" *ngIf="data.optional">*</span>:</label>
-      <select class="form-control" [ngClass]="{'is-invalid': isFieldValid(data.fieldName)}" (change)="onChange()" [formControlName]="data.fieldName"
-        id="sel1">
-        <option disabled value="">Select</option>
-        <option *ngFor="let option of options" [value]="option.key">{{option.value ? option.value : option.key}}</option>
-      </select>
+<div *ngIf="!isTable">
+  <form [formGroup]="inputForm">
+    <div class="form-group">
+      <div class="">
+        <label class="view-label" *ngIf="!hideLabel" for="sel1"
+          title="{{data.displayName}}">{{convertDisplayName(data.displayName)}}<span class="mandatory-span"
+            *ngIf="data.optional">*</span>:</label>
+        <select class="form-control" [ngClass]="{'is-invalid': isFieldValid(data.fieldName)}" (change)="onChange()"
+          [formControlName]="data.fieldName" id="sel1">
+          <option disabled value="">Select</option>
+          <option *ngFor="let option of options" [value]="option.key">{{option.value ? option.value : option.key}}
+          </option>
+        </select>
+      </div>
     </div>
-  </div>
-</form>
+  </form>
+</div>
+<div *ngIf="isTable">
+  <form [formGroup]="inputForm">
+    <div class="form-group">
+      <div class="">
+        <label class="view-label" *ngIf="!hideLabel" for="sel1"
+          title="{{data.displayName}}">{{convertDisplayName(data.displayName)}}<span class="mandatory-span"
+            *ngIf="data.optional">*</span>:</label>
+        <select class="form-control" [ngClass]="{'is-invalid': isFieldValid(data.fieldName)}" (change)="onChange()"
+          [formControlName]="data.fieldName" id="sel1">
+          <option disabled value="">Select</option>
+          <option *ngFor="let option of options" [value]="option.key">{{option.value ? option.value : option.key}}
+          </option>
+        </select>
+      </div>
+    </div>
+  </form>
+</div>

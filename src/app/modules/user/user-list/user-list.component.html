@@ -2,13 +2,49 @@
   <div class="row">
   </div>
   <div class="row header-border">
-    <div class="col-md-10">
-      <h3 class="text-dark padding-top">User Dashboard</h3>
+    <h3 class="text-dark padding-top">User Dashboard</h3>
+  </div>
+  <div class="row">
+    <div class="col-md-5 form-group">
+      <label class="view-label" for="appId">Work Item ID</label>
+      <input type="text" class="form-control" [(ngModel)]="workItemID" id="appNumber">
     </div>
-    <div class="col-md-2">
-      <button class="btn btn-primary mt-20" (click)="createMaterial()"> Create Material </button>
+    <div class="col-md-1 padding-button">
+      <button class="btn btn-primary mt-20" (click)="getWorkItemsID()"> Search & Get WorkItem </button>
     </div>
   </div>
+  <div class="row" *ngIf="workItemsList.length > 0">
+    <table class="mt-20 table dynamicViewTable">
+      <thead class="table-active">
+        <tr>
+          <th class="capitalize">Work Item Id</th>
+          <th class="capitalize">Created By</th>
+          <th class="capitalize">Created Date</th>
+          <th class="capitalize">Material Request</th>
+          <th>Edit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let workItem of workItemPagedResults; let index = index;">
+          <td>{{workItem.workitemId}}</td>
+          <td>{{workItem.createdBy}}</td>
+          <td>{{userDataService.convertDateFormat(workItem.createdOn)}}</td>
+          <td>{{workItem.keyId ? 'Approved(' + workItem.keyId + ')' : 'Pending'}}</td>
+          <td>
+            <a (click)="editWorkItem(workItem)">
+              <i class="material-icons">edit</i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="float-right">
+      <app-pagination [dataLength]="workItemsList.length" (pageChange)="workItemPageChange($event)"
+        [pageSize]="pageSize"></app-pagination>
+    </div>
+  </div>
+  <br />
+  <br />
   <div class="row">
     <div class="col-md-5 form-group">
       <label class="view-label" for="appId">App ID: </label>
@@ -19,13 +55,6 @@
     </div>
     <div class="col-md-1 padding-button">
       <button class="btn btn-primary mt-20" (click)="getConfigDetails()"> Search </button>
-    </div>
-    <div class="col-md-5 form-group">
-      <label class="view-label" for="appId">Work Item ID</label>
-      <input type="text" class="form-control" [(ngModel)]="workItemID" id="appNumber">
-    </div>
-    <div class="col-md-1 padding-button">
-      <button class="btn btn-primary mt-20" (click)="getWorkItemsID()"> Search </button>
     </div>
   </div>
   <div class="row" *ngIf="materialDetails.length > 0">
@@ -55,38 +84,9 @@
       </tbody>
     </table>
     <div class="float-right">
-      <app-pagination [dataLength]="materialDetails.length" (pageChange)="pageChange($event)" [pageSize]="pageSize"></app-pagination>
-    </div>
-  </div>
-  <br />
-  <br />
-  <div class="row" *ngIf="workItemsList.length > 0">
-    <table class="mt-20 table dynamicViewTable">
-      <thead class="table-active">
-        <tr>
-          <th class="capitalize">Work Item Id</th>
-          <th class="capitalize">Created By</th>
-          <th class="capitalize">Created Date</th>
-          <th class="capitalize">Material Request</th>
-          <th>Edit</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let workItem of workItemPagedResults; let index = index;">
-          <td>{{workItem.workitemId}}</td>
-          <td>{{workItem.createdBy}}</td>
-          <td>{{convertDateFormat(workItem.createdOn)}}</td>
-          <td>{{workItem.keyId ? 'Approved(' + workItem.keyId + ')' : 'Pending'}}</td>
-          <td>
-            <a (click)="editWorkItem(workItem)">
-              <i class="material-icons">edit</i>
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="float-right">
-      <app-pagination [dataLength]="workItemsList.length" (pageChange)="workItemPageChange($event)" [pageSize]="pageSize"></app-pagination>
+      {{materialDetails.lengt}}
+      <app-pagination [dataLength]="materialDetails.length" (pageChange)="pageChange($event)" [pageSize]="pageSize">
+      </app-pagination>
     </div>
   </div>
 </div>

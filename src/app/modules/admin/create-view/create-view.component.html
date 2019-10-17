@@ -56,9 +56,9 @@
             <app-field-list [fieldList]="createViewJSON[key]" [form]="formGroup"></app-field-list>
           </div>
         </div>
-        <div *ngSwitchCase="'accordions'">
+        <div *ngSwitchCase="'accordions'" >
           <app-accordion [panels]="createViewJSON[key]" [isAdmin]="true" (deletePanel)="deletePanel($event, key)"
-            [form]="formGroup"></app-accordion>
+            [form]="formGroup" [appFieldDependentList]="appFieldDependentList"></app-accordion>
         </div>
         <div *ngSwitchCase="'tabs'">
           <app-tabs [tabList]="createViewJSON[key]" [isAdmin]="true" [form]="formGroup"></app-tabs>

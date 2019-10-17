@@ -51,9 +51,8 @@ export class PreviewComponent implements OnInit {
   }
 
   getDropdownDetails() {
-    this.userDataService.getDropDownListBasedAppID(this.userDataService.configDetails.viewDetails.appId).subscribe(
+    this.userDataService.getDropDownListBasedAppID(this.userDataService.dropDownKeysList).subscribe(
       (dropdownResponse: any) => {
-        console.log(dropdownResponse);
         this.userDataService.dropDownList = dropdownResponse.dropdownNav;
         if (this.configDetails.viewType === 'pre-view') {
           this.userDataService.getConfigViewDetails(this.userDataService.configDetails.viewDetails.appId,

@@ -1,0 +1,28 @@
+<div [ngSwitch]="fieldList.fieldType" class="col-md-12">
+  <app-input *ngSwitchCase="'C'" [isAdmin]="false" [data]="fieldList" [inputForm]="form" [hideLabel]="hideLabel"
+    [isTable]="true" (changeEvent)="changeEvent($event)"></app-input>
+  <app-input *ngSwitchCase="'D'" [isAdmin]="false" [data]="fieldList" [inputForm]="form" [hideLabel]="hideLabel"
+    [isTable]="true"></app-input>
+  <app-numeric-input *ngSwitchCase="''" [data]="fieldList" [inputForm]="form" [hideLabel]="hideLabel" [isTable]="true" (changeEvent)="changeEvent($event)">
+  </app-numeric-input>
+  <app-numeric-input *ngSwitchCase="'N'" [data]="fieldList" [inputForm]="form" [hideLabel]="hideLabel" [isTable]="true" (changeEvent)="changeEvent($event)">
+  </app-numeric-input>
+  <app-textarea *ngSwitchCase="'textArea'" [data]="fieldList" [inputForm]="form" [hideLabel]="hideLabel"
+    [isTable]="true" (changeEvent)="changeEvent($event)"></app-textarea>
+  <app-drop-down-list *ngSwitchCase="'DD'" [data]="fieldList" [inputForm]="form" [hideLabel]="hideLabel"
+    [isTable]="true" (changeEvent)="changeEvent($event)"></app-drop-down-list>
+  <app-drop-down-list *ngSwitchCase="'F4'" [data]="fieldList" [inputForm]="form" [hideLabel]="hideLabel"
+    [isTable]="true" (changeEvent)="changeEvent($event, fieldList)"></app-drop-down-list>
+  <!-- <app-multi-select-dropdown-component *ngSwitchCase="'F4'" [data]="element" [inputForm]="form"></app-multi-select-dropdown-component> -->
+  <!-- <div *ngSwitchCase="'CB'" class="col-md-12 col-sm-12 col-xs-6 form-group">
+      <label for="sel1">{{element.displayName}}
+        <span class="mandatory-span" *ngIf="element.required">*</span>:</label>
+      <div class="clearfix">
+        <label class="container1 radio-inline" *ngFor="let option of getMasterValeus(element)">
+          <span>{{option.value}}</span>
+          <input type="radio" name="optradio" [value]="option.key">
+          <span class="checkmark"></span>
+        </label>
+      </div>
+    </div> -->
+</div>

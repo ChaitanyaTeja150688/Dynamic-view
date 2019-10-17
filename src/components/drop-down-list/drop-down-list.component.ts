@@ -15,6 +15,9 @@ export class DropDownListComponent implements OnInit {
   @Input() panel: string;
   @Input() inputForm: FormGroup;
   @Input() disable: Boolean = false;
+  @Input() hideLabel = false;
+  @Input() isTable = false;
+  @Input() formControl: FormControl;
   options: any = [];
   constructor(
     private fb: FormBuilder,
@@ -23,19 +26,21 @@ export class DropDownListComponent implements OnInit {
 
   ngOnInit() {
     const group = {};
-    const dropdowns = _.find(this.userDataService.dropDownList, { 'fieldName': this.data.fieldName});
+    const dropdowns = _.find(this.userDataService.dropDownList, { 'fieldName': this.data.fieldName });
     if (dropdowns) {
       this.options = dropdowns.dropdowns;
     }
-    const validations = this.setValidaitons();
-    group[this.data.fieldName] = validations.length ? new FormControl('', validations) : new FormControl('');
-    const form = this.inputForm.get(this.data.fieldName);
-    if (form && (this.data.fieldType === 'F4' || this.data.fieldType === 'DD')) {
-      this.inputForm.get(this.data.fieldName).setValue(this.data['fieldValue']);
-    } else {
-      const control = this.fb.control(this.data['fieldValue'], [Validators.required]);
-      this.inputForm.addControl(this.data.fieldName, control);
-    }
+    // if (!this.isTable) {
+    //   const validations = this.setValidaitons();
+    //   group[this.data.fieldName] = validations.length ? new FormControl('', validations) : new FormControl('');
+    //   const form = this.inputForm.get(this.data.fieldName);
+    //   if (form && (this.data.fieldType === 'F4' || this.data.fieldType === 'DD')) {
+    //     this.inputForm.get(this.data.fieldName).setValue(this.data['fieldValue']);
+    //   } else {
+    //     const control = this.fb.control(this.data['fieldValue'], [Validators.required]);
+    //     this.inputForm.addControl(this.data.fieldName, control);
+    //   }
+    // }
   }
 
   onChange() {
@@ -72,7 +77,9 @@ export class DropDownListComponent implements OnInit {
   }
 
   isFieldValid(field: string) {
-    return !this.inputForm.get(field).disabled && !this.inputForm.get(field).valid && this.inputForm.get(field).touched;
+    if (!this.isTable) {
+      return !this.inputForm.get(field).disabled && !this.inputForm.get(field).valid && this.inputForm.get(field).touched;
+    }
   }
 
   displayError(field: string) {
@@ -88,7 +95,7 @@ export class DropDownListComponent implements OnInit {
   }
 
   convertDisplayName(displayName: string) {
-    return displayName.substring(0, 20);
+    return displayName.substring(0, 35);
   }
 
 }

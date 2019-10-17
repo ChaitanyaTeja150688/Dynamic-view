@@ -1,28 +1,43 @@
 <div *ngIf="tabList.length">
-  <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item" *ngFor="let item of tabList; let index = index;">
-      <a class="nav-link" [ngClass]="{'active': item.active}" data-toggle="tab" (click)="showActiveTabList(item)" role="tab">{{item.tabName}}</a>
-    </li>
-  </ul>
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <!-- {{fieldList | json}} -->
-    <div class="col-md-12 clearfix" *ngFor="let item of fieldItems">
-      <!-- {{item}} -->
-      <div [ngSwitch]="item">
-        <div *ngSwitchCase="'fields'">
-          <div *ngIf="isAdmin">
-            <app-field-list [fieldList]="fieldList.fields" [form]="form"></app-field-list>
+  <div [formGroup]="form">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" *ngFor="let item of tabList; let index = index;">
+        <div class="row">
+          <div [ngClass]="{'col-md-11': isAdmin, 'col-md-12': !isAdmin}">
+              <a class="nav-link" [ngClass]="{'active': item.active}" data-toggle="tab"
+              (click)="showActiveTabList(item, index)" role="tab">{{item.tabName}}</a>
           </div>
-          <div *ngIf="!isAdmin">
-            <app-component-panel [fieldList]="fieldList.fields" [answers]="answers" [isAccordion]="'false'" [form]="form"></app-component-panel>
+          <div class="col-md-1" *ngIf="isAdmin">
+              <a (click)="deleteTab(item)"><i class="material-icons">delete</i></a>
           </div>
         </div>
-        <div *ngSwitchCase="'accordions'">
-          <app-accordion *ngSwitchCase="'accordions'" [panels]="fieldList.accordions" [isAdmin]="isAdmin" [form]="form">
-          </app-accordion>
+      </li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content" *ngIf="!isTable">
+      <div class="col-md-12 clearfix" *ngFor="let item of fieldItems">
+        <!-- {{item}} -->
+        <div [ngSwitch]="item">
+          <div *ngSwitchCase="'fields'">
+            <div *ngIf="isAdmin">
+              <app-field-list [fieldList]="fieldList.fields" [form]="form"></app-field-list>
+            </div>
+            <div *ngIf="!isAdmin">
+              <app-component-panel [fieldList]="fieldList.fields" [answers]="answers" [isAccordion]="'false'"
+                [form]="form"></app-component-panel>
+            </div>
+          </div>
+          <div *ngSwitchCase="'accordions'">
+            <app-accordion *ngSwitchCase="'accordions'" [panels]="fieldList.accordions" [isAdmin]="isAdmin"
+              [form]="form">
+            </app-accordion>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="tab-content" *ngIf="isTable && tabTableRows.length" [formGroupName]="tabTableRows[0].tabId">
+      <app-table [isAdmin]="isAdmin" [form]="getControlGroup(tabTableRows[0].tabId)" [isTable]="isTable"
+        [tabTableRows]="tabTableRows"></app-table>
     </div>
   </div>
 </div>

@@ -1,20 +1,20 @@
 <form [formGroup]="form">
   <div class="row padding-bottom-top-2">
-    <div class="col-md-4 label-font-size" *ngFor="let element of fieldList; let index = index;">
-      <div class="row padding-bottom-3">
+    <div [ngClass]="{'col-md-4': hiddenRequired, 'col-md-12': !hiddenRequired}" class="label-font-size" *ngFor="let element of fieldList; let index = index;" >
+      <div class="row padding-bottom-3" *ngIf="hiddenRequired">
         <div class="col-md-6" [formGroupName]="element.fieldName">
-          <app-toggle-switch [label]="'Hidden'" [data]="element" [fieldName]="'hidden'" [disable]="element.required"
-            (toggleChange)="toggleChange($event, index, true)"></app-toggle-switch>
+          <app-toggle-switch [label]="'Hidden'" [data]="element" [fieldName]="'hidden'" [disable]="(element.required)"
+            (toggleChange)="toggleChange($event, index, true)" [form]="form"></app-toggle-switch>
         </div>
         <div class="col-md-6">
           <app-toggle-switch [label]="'Mandatory'" [data]="element" [disable]="(element.required || element.hidden)"
-            [fieldName]="'optional'" (toggleChange)="toggleChange($event, index)"></app-toggle-switch>
+            [fieldName]="'optional'" (toggleChange)="toggleChange($event, index)" [form]="form"></app-toggle-switch>
         </div>
       </div>
       <div class="col-md-12 padding-left-0">
         <!-- <app-input [data]="element"  [isAdmin]="true" [inputForm]="form"></app-input> -->
         <div class="form-group">
-          <label class="view-label" [for]="element.fieldName">{{element.fieldName}}<span class="mandatory-span"
+          <label class="view-label" *ngIf="hiddenRequired" [for]="element.fieldName">{{element.fieldName}}<span class="mandatory-span"
               *ngIf="element.optional">*</span>:</label>
           <input class="form-control" type="text" [ngClass]="{'is-invalid': isFormControlValid(element.fieldName)}"  [formControlName]="element.fieldName"
             (change)="onChange(element, index)" />

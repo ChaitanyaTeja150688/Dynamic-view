@@ -42,7 +42,8 @@ export class UserListComponent implements OnInit {
     this.showLoader = true;
     this.userDataService.getMetaDataList().subscribe((response) => {
       this.appIdList = response.apps;
-      this.showLoader = false;
+      this.selectedAppDetails = _.where(this.appIdList, { 'appId' : 'BUS1001006'})[0];
+      this.getConfigDetails(true);
     });
   }
 
@@ -57,14 +58,17 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  getConfigDetails() {
+  getConfigDetails(status =  false) {
     if (this.selectedAppDetails.appId) {
-      this.getConfigWorkItemsIds();
+      if (status) {
+        this.getConfigWorkItemsIds();
+      }
       this.showLoader = true;
-      this.userDataService.getDashboardData().subscribe((response: Response) => {
-        this.showLoader = false;
+      this.userDataService.getDashboardData(this.selectedAppDetails.appId).subscribe((response: Response) => {
         this.materialDetails = _.sortBy(response.views, function(o) { return -o.configId; });
+        this.currentPage = 1;
         this.getPageChanged();
+        this.showLoader = false;
       });
     }
   }
@@ -73,8 +77,12 @@ export class UserListComponent implements OnInit {
     if (this.workItemID) {
       this.showLoader = true;
       this.userDataService.getUserWorkItemID(this.workItemID).subscribe((response: any) => {
-        console.log(response);
-        this.showLoader = false;
+        this.userDataService.userTypeView = 'EditWorkItem';
+        this.userDataService.userAppId = this.selectedAppDetails.appId;
+        this.userDataService.userConfigId = '';
+        this.userDataService.workItemDetails['keyId'] = '';
+        this.userDataService.workItemDetails['workitemId'] = this.workItemID;
+        this.route.navigate(['/user-view']);
       });
     }
   }
@@ -120,17 +128,6 @@ export class UserListComponent implements OnInit {
   addSpacing(columnName: string) {
     columnName.replace(/[A-Z]/g, ' ');
     return columnName;
-  }
-
-  convertDateFormat(jsonDate: string) {
-    if (jsonDate) {
-      const nowDate = new Date(parseInt(jsonDate.substr(6)));
-      let day = nowDate.getDate().toString();
-      day = (day.length === 1) ? ('0' + day) : day;
-      const month = (1 + nowDate.getMonth()).toString();
-      return day + '/' + ((month.length === 1) ? ('0' + month) : month) + '/' + nowDate.getFullYear().toString();
-    }
-    return 'N/A';
   }
 
   pageChange(event) {

@@ -31,7 +31,6 @@ export class HttpService {
     const observable = new Observable(observer => {
       this.http.get(url, { observe: 'response', headers: this.headers })
       .subscribe((res: HttpResponse<Response>) => {
-        console.log(res);
         observer.next(res);
       });
     });

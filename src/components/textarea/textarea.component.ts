@@ -14,39 +14,46 @@ export class TextAreaComponent implements OnInit, OnChanges {
   @Input() panel: string;
   @Input() inputForm: FormGroup;
   @Input() disable: Boolean = false;
-
+  @Input() hideLabel = false;
+  @Input() isTable = false;
   constructor(
     private fb: FormBuilder
   ) { }
 
   ngOnInit() {
-    const group = {};
-    const validations = this.setValidaitons();
-    group[this.data.fieldName] = validations.length ? new FormControl('', validations) : new FormControl('');
-    const form = this.inputForm.get(this.data.fieldName);
-    if (form) {
-    } else {
-      const control = this.fb.control('', [Validators.required]);
-      this.inputForm.addControl(this.data.fieldName, control);
+    if (!this.isTable) {
+      const group = {};
+      const validations = this.setValidaitons();
+      group[this.data.fieldName] = validations.length ? new FormControl('', validations) : new FormControl('');
+      const form = this.inputForm.get(this.data.fieldName);
+      if (form) {
+      } else {
+        const control = this.fb.control('', [Validators.required]);
+        this.inputForm.addControl(this.data.fieldName, control);
+      }
+      this.ngOnChanges();
     }
-    this.ngOnChanges();
   }
 
   ngOnChanges() {
-    const control = this.inputForm.get(this.data.fieldName);
-    if (control) {
-      if (this.disable) {
-        control.setValue('');
-        control.disable();
-      } else {
-        control.setValue(this.data.displayName);
-        control.enable();
+    if (!this.isTable) {
+      const control = this.inputForm.get(this.data.fieldName);
+      if (control) {
+        if (this.disable) {
+          control.setValue('');
+          control.disable();
+        } else {
+          control.setValue(this.data.displayName);
+          control.enable();
+        }
       }
     }
   }
 
   onChange() {
-    this.data.displayName = this.inputForm.get(this.data.fieldName).value;
+    if (!this.isTable) {
+      this.data.displayName = this.inputForm.get(this.data.fieldName).value;
+    }
   }
 
   setValidaitons() {

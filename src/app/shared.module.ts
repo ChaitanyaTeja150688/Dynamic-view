@@ -18,8 +18,11 @@ import { FieldListComponent } from '../components/field-list/field-list.componen
 import { ToggleSwitchComponent } from '../components/toggle-switch/toggle-switch.component';
 import { ComponentPanelComponent } from '../components/component-panel/component-panel.component';
 import { TabsComponent } from '../components/tabs/tabs.component';
+import { TableComponent } from '../components/table/table.component';
 import { LoaderComponent } from '../components/loader/loader.component';
 import { ModalComponent } from '../components/modal/modal.component';
+import { AlertsComponent } from '../components/alerts/alerts.component';
+import { TableComponentPanelComponent } from '../components/table-component-panel/table-component-panel.component';
 
 const components = [
     HeaderComponent,
@@ -37,7 +40,10 @@ const components = [
     NumericInputComponent,
     PanelContentComponent,
     TextAreaComponent,
-    ModalComponent
+    ModalComponent,
+    AlertsComponent,
+    TableComponent,
+    TableComponentPanelComponent
 ];
 @NgModule({
     declarations: components,

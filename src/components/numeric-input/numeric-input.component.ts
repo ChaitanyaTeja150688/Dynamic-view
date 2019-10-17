@@ -14,26 +14,31 @@ export class NumericInputComponent implements OnInit {
   @Input() data: FieldSet;
   @Input() inputForm: FormGroup;
   @Input() disable: Boolean = false;
-
+  @Input() hideLabel = false;
+  @Input() isTable = false;
   constructor(
     private fb: FormBuilder
   ) { }
 
   ngOnInit() {
-    const group = {};
-    const validations = this.setValidaitons();
-    group[this.data.fieldName] = validations.length ? new FormControl('', validations) : new FormControl('');
-    const form = this.inputForm.get(this.data.fieldName);
-    if (form && (this.data.fieldType === 'N')) {
-      this.inputForm.get(this.data.fieldName).setValue(this.data['fieldValue'].toString() || '');
-    } else {
-      const control = this.fb.control(this.data['fieldValue'].toString() || '', [Validators.required]);
-      this.inputForm.addControl(this.data.fieldName, control);
+    if (!this.isTable) {
+      const group = {};
+      const validations = this.setValidaitons();
+      group[this.data.fieldName] = validations.length ? new FormControl('', validations) : new FormControl('');
+      const form = this.inputForm.get(this.data.fieldName);
+      if (form && (this.data.fieldType === 'N')) {
+        this.inputForm.get(this.data.fieldName).setValue(this.data['fieldValue'].toString() || '');
+      } else {
+        const control = this.fb.control(this.data['fieldValue'].toString() || '', [Validators.required]);
+        this.inputForm.addControl(this.data.fieldName, control);
+      }
     }
   }
 
   onChange() {
-    this.data.fieldValue = this.inputForm.get(this.data.fieldName).value;
+    if (!this.isTable) {
+      this.data.fieldValue = this.inputForm.get(this.data.fieldName).value;
+    }
   }
 
   setValidaitons() {
@@ -57,7 +62,10 @@ export class NumericInputComponent implements OnInit {
   }
 
   isFieldValid(field: string) {
-    return !this.inputForm.get(field).disabled && !this.inputForm.get(field).valid && this.inputForm.get(field).touched;
+    if (!this.isTable) {
+      return !this.inputForm.get(field).disabled && !this.inputForm.get(field).valid && this.inputForm.get(field).touched;
+    }
+    return false;
   }
 
   displayError(field: string) {
@@ -78,5 +86,9 @@ export class NumericInputComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  convertDisplayName(displayName: string) {
+    return displayName.substring(0, 35);
   }
 }

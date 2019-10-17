@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FormFieldModel } from '../../models/form-field.model';
 import { FieldSet } from '../field-list/field-list.component';
@@ -15,29 +15,33 @@ export class InputComponent implements OnInit, OnChanges {
   @Input() inputForm: FormGroup;
   @Input() isAdmin = false;
   @Input() disable: Boolean = false;
-
+  @Input() hideLabel = false;
+  @Input() isTable = false;
+  @Output() changeEvent = new EventEmitter<any>();
   constructor(
     private fb: FormBuilder
   ) { }
 
   ngOnInit() {
-    const group = {};
-    const validations = this.setValidaitons();
-    group[this.data.fieldName] = validations.length ? new FormControl('', validations) : new FormControl('');
-    const form = this.inputForm.get(this.data.fieldName);
-    if (form && (this.data.fieldType === 'C')) {
-      this.inputForm.get(this.data.fieldName).setValue(this.data['fieldValue'].toString() || '');
-    } else {
-      const control = this.fb.control(this.isAdmin ?
-        this.data.displayName : (this.data['fieldValue'].toString() || ''), [Validators.required]);
-      this.inputForm.addControl(this.data.fieldName, control);
+    if (!this.isTable) {
+      const group = {};
+      const validations = this.setValidaitons();
+      group[this.data.fieldName] = validations.length ? new FormControl('', validations) : new FormControl('');
+      const form = this.inputForm.get(this.data.fieldName);
+      if (form && (this.data.fieldType === 'C')) {
+        this.inputForm.get(this.data.fieldName).setValue(this.data['fieldValue'].toString() || '');
+      } else {
+        const control = this.fb.control(this.isAdmin ?
+          this.data.displayName : (this.data['fieldValue'].toString() || ''), [Validators.required]);
+        this.inputForm.addControl(this.data.fieldName, control);
+      }
+      this.updateControl();
     }
-    this.updateControl();
   }
 
   ngOnChanges() {
     this.updateControl();
-    this.onChange(true);
+    // this.onChange(true);
   }
   updateControl() {
     const control = this.inputForm.get(this.data.fieldName);
@@ -54,7 +58,7 @@ export class InputComponent implements OnInit, OnChanges {
     if (this.isAdmin) {
       this.data.displayName = this.inputForm.get(this.data.fieldName).value;
     } else {
-      this.data.fieldValue = status ? this.data.fieldValue : this.inputForm.get(this.data.fieldName).value;
+      this.changeEvent.emit({fieldName: this.data.fieldName, value: this.inputForm.get(this.data.fieldName).value});
     }
   }
 
@@ -78,15 +82,6 @@ export class InputComponent implements OnInit, OnChanges {
     return validations;
   }
 
-  // setInputProperties() {
-  //   if (this.data.value) {
-  //     this.inputForm.get(this.data.fieldName).setValue(this.data.value);
-  //   }
-  //   if (this.data.disabled) {
-  //     this.inputForm.get(this.data.fieldName).disable();
-  //   }
-  // }
-
   isFieldValid(field: string) {
     return !this.inputForm.get(field).disabled && !this.inputForm.get(field).valid && this.inputForm.get(field).touched;
   }
@@ -104,6 +99,12 @@ export class InputComponent implements OnInit, OnChanges {
   }
 
   convertDisplayName(displayName: string) {
-    return displayName.substring(0, 20);
+    return displayName.substring(0, 35);
+  }
+
+  getControl() {
+    if (!this.isTable) {
+
+    }
   }
 }

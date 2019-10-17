@@ -23,7 +23,50 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.buildFormControls();
+        // this.testQuestions();
     }
+
+    testQuestions() {
+        // ===> 1
+        // pharse = 'hello';
+        // if (false) {
+        //     var pharse;
+        // }
+        // console.log(pharse);
+        // end
+        // ===> 2
+        // console.log('foo');
+        // setTimeout(g, 0);
+        // console.log('baz');
+        // h();
+        // end
+        // ===> 3
+        // const hey = 'hey';
+        // const you = 'you';
+        // const heyyou = hey + you + '';
+        // ['h', 'e', 'y'].forEach((letter) => console.log(letter));
+        // // end
+        // // ===> 4
+        // console.log(console.log, console.log( console.log( ((tr) => 10) )));
+        // // end
+        // // ===> 5
+        // function header(header) {
+        //     function innerFunction(innerFunction) {
+        //         return header(innerFunction);
+        //     }
+        //     return innerFunction;
+        // }
+        // console.log(header(12)(12));
+        // end
+    }
+
+    // function g() {
+    //     console.log('bar');
+    // }
+
+    // function h() {
+    //     console.log('blix');
+    // }
 
     buildFormControls() {
         this.loginForm = this.formBuilder.group({

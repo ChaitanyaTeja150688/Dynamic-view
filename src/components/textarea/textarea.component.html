@@ -1,7 +1,7 @@
 <form [formGroup]="inputForm">
     <div class="form-group" [hidden]="data.hidden">
         <div class="">
-            <label class="view-label" for="sel1">{{data.fieldName}}<span class="mandatory-span" *ngIf="data.required">*</span>:</label>
+            <label class="view-label" *ngIf="!hideLabel" for="sel1">{{data.fieldName}}<span class="mandatory-span" *ngIf="data.required">*</span>:</label>
             <textarea class="form-control" [ngClass]="{'is-invalid': isFieldValid(data.fieldName)}" type="text"
             [placeholder]="data.displayName" (change)="onChange()" [formControlName]="data.fieldName" rows="3"></textarea>
         </div>

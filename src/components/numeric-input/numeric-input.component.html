@@ -1,5 +1,5 @@
 <div class="form-group" [formGroup]="inputForm">
-    <label class="view-label" for="sel1">{{data.displayName}}<span class="mandatory-span"
+    <label class="view-label"  *ngIf="!hideLabel" for="sel1" title="{{data.displayName}}">{{convertDisplayName(data.displayName)}}<span class="mandatory-span"
             *ngIf="data.optional">*</span>:</label>
     <input class="form-control" [ngClass]="{'is-invalid': isFieldValid(data.fieldName)}" (change)="onChange()"
         (keypress)="numberOnly($event)" type="text" [formControlName]="data.fieldName" />

@@ -1,5 +1,14 @@
-<label class="switch">
-  <input type="checkbox" (change)="onChange()" [disabled]="disable" [checked]="selected">
-  <span class="slider round"></span>
-</label>
-<span>{{label}}</span>
+<div *ngIf="type">
+  <label class="switch">
+    <input type="checkbox" (change)="onChange()" [disabled]="disable" [checked]="selected">
+    <span class="slider round"></span>
+  </label>
+  <span>{{label}}</span>
+</div>
+<div  *ngIf="!type" [formGroup]="form">
+  <label class="switch">
+    <input type="checkbox" (change)="onChange()" [formControlName]="getFormControlName()" [disabled]="disable">
+    <span class="slider round"></span>
+  </label>
+  <span>{{label}}</span>
+</div>

@@ -27,6 +27,7 @@ export class UserDataService {
   configFields = {};
   metaData: MetaData;
   dropDownList;
+  dropDownKeysList;
   userAppId = '';
   userConfigId = '';
   userTypeView = '';
@@ -100,9 +101,9 @@ export class UserDataService {
     return this.http.get(this.url + path);
   }
 
-  getDropDownListBasedAppID(appId: string = 'BUS1001006') {
-    const path = 'api/dropDownList/' + appId;
-    return this.http.get(this.url + path);
+  getDropDownListBasedAppID(dropDownKeysList) {
+    const path = 'api/dropDownList';
+    return this.http.post(this.url + path, dropDownKeysList);
   }
 
   saveAdminConfig(object) {
@@ -157,6 +158,17 @@ export class UserDataService {
   saveUserConfigView(body) {
     const path = 'user/userSaveConfig';
     return this.http.post(this.url + path, body);
+  }
+
+  convertDateFormat(jsonDate: string) {
+    if (jsonDate) {
+      const nowDate = new Date(parseInt(jsonDate.substr(6)));
+      let day = nowDate.getDate().toString();
+      day = (day.length === 1) ? ('0' + day) : day;
+      const month = (1 + nowDate.getMonth()).toString();
+      return day + '/' + ((month.length === 1) ? ('0' + month) : month) + '/' + nowDate.getFullYear().toString();
+    }
+    return 'N/A';
   }
 
 }

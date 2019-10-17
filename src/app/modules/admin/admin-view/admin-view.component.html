@@ -61,7 +61,7 @@
             <td class="">{{view.createdBy}}</td>
             <td class="">{{view.userRole}}</td>
             <td class="">{{view.configName}}</td>
-            <td class="">{{dateConverstion(view.creationDate)}}</td>
+            <td class="">{{userDataService.convertDateFormat(view.creationDate)}}</td>
             <td class="">
               <a (click)="preview(view, index)">
                 <i class="material-icons">search</i>

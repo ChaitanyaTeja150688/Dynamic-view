@@ -22,6 +22,7 @@ export class CreateViewComponent implements OnInit {
   showLoader = false;
   appDependentList = [];
   isAppPanelOpen = false;
+  appFieldDependentList = [];
   constructor(
     public formBuilder: FormBuilder,
     private route: Router,
@@ -51,7 +52,8 @@ export class CreateViewComponent implements OnInit {
       app: new FormControl(this.configDetails.viewDetails.appId, [Validators.required]),
       role: new FormControl(this.configDetails.viewDetails.userRoleId, [Validators.required]),
       viewName: new FormControl(this.configDetails.viewDetails.configName, [Validators.required]),
-      defaultFormGroup: this.formBuilder.group({})
+      defaultFormGroup: this.formBuilder.group({}),
+      tabs: this.formBuilder.array([])
     });
     this.getMetaData();
     // this.defaultFormGroup = this.formBuilder.group({});
@@ -141,7 +143,9 @@ export class CreateViewComponent implements OnInit {
     this.showLoader = true;
     this.userDataService.getConfigDetails(object).subscribe((response: any) => {
       response.data.accordions = _.sortBy(response.data.accordions, function (o) { return o.sectionId; });
+      this.appFieldDependentList = response.appDependentFieldSet;
       this.createViewJSON = response.data;
+      this.userDataService.dropDownKeysList = response.dropdownList;
       this.veiwArray = Object.keys(this.createViewJSON);
       this.showLoader = false;
     });
@@ -151,7 +155,7 @@ export class CreateViewComponent implements OnInit {
     if (this.formGroup.valid) {
       this.showLoader = true;
       this.createViewJSON.appId = this.formGroup.get('app').value;
-      this.createViewJSON['appName'] = _.filter(this.appsList, {code : this.formGroup.get('app').value}).value;
+      this.createViewJSON['appName'] = _.filter(this.appsList, { code: this.formGroup.get('app').value }).value;
       this.createViewJSON.configId = (this.configDetails.viewType !== 'edit') ? '' : this.createViewJSON.configId;
       this.createViewJSON.configName = this.formGroup.get('viewName').value;
       this.createViewJSON['defaultFields'] = this.getDefaultFieldValues();
@@ -177,7 +181,7 @@ export class CreateViewComponent implements OnInit {
             this.loadDefaultFields(response.dependentList, defaultFieldsResponse.dependentList);
             this.showLoader = false;
           }
-        );
+          );
       }
     );
   }
